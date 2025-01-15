@@ -1,0 +1,12 @@
+{
+    "name": "backend",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+      "dev": "dotnet run --launch-profile http",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint"
+    }
+  }
+  
