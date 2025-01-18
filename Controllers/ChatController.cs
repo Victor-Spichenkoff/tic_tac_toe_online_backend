@@ -1,4 +1,6 @@
-﻿namespace asp_rest_model.Controllers;
+﻿using asp_rest_model.Sockets;
+
+namespace asp_rest_model.Controllers;
 
 
 using Microsoft.AspNetCore.Mvc;
@@ -20,4 +22,26 @@ public class ChatController : ControllerBase
     {
         return Ok(new { status = "Socket server is running." });
     }
+
+
+    [HttpGet("/room/exists/{roomId}")]
+    [ProducesResponseType(typeof(bool), 200)]
+    public IActionResult GetRoom(string roomId)
+    {
+        var exists = RoomManager.RoomExists(roomId);
+
+        return Ok(exists);
+    }
+    
+    
+    [HttpGet("/room/isFull/{roomId}")]
+    [ProducesResponseType(typeof(bool), 200)]
+    public IActionResult GetRoomFullState(string roomId)
+    {
+        var exists = RoomManager.RoomFull(roomId);
+
+        return Ok(exists);
+    }
+    
+    
 }
