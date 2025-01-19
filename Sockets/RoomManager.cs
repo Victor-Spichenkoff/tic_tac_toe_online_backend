@@ -1,10 +1,13 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
+using asp_rest_model.Helpers;
 
 namespace asp_rest_model.Sockets;
 
 public class RoomManager
 {
+    //TODO
+    // TODO - Testar a criação de 2 salas + controller de isFull
     public static readonly ConcurrentDictionary<string, List<WebSocket>> rooms = new();
 
     public static void CreateRoom(string roomId)
@@ -16,9 +19,12 @@ public class RoomManager
     {
         return rooms.ContainsKey(roomId);
     }
-    
+
     public static bool RoomFull(string roomId)
     {
-        return rooms[roomId].Count > 2;
+        if (!rooms.ContainsKey(roomId))
+            throw new GenericApiError($"ID {roomId} is not in use");
+
+        return rooms[roomId].Count >= 2;
     }
 }

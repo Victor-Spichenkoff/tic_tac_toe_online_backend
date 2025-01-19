@@ -38,10 +38,8 @@ public class ChatController : ControllerBase
     [ProducesResponseType(typeof(bool), 200)]
     public IActionResult GetRoomFullState(string roomId)
     {
-        var exists = RoomManager.RoomFull(roomId);
+        var isFull = RoomManager.RoomFull(roomId);
 
-        return Ok(exists);
+        return Ok(isFull);
     }
-    
-    
 }

@@ -17,12 +17,15 @@ builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlite("Data Source=Data/dev.db"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+//Cors
+builder.Services.ConfigureCors(builder.Configuration, builder.Environment.EnvironmentName);
 
 var app = builder.Build();
 
 //socket
 app.UseWebSockets();
 app.UseMiddleware<SocketMiddleware>();
+app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,9 +34,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     // seeding
     app.MigrateDatabase();
+    
+    app.UseCors("DevelopmentCorsPolicy");
+}
+else
+{
+    app.UseCors("ProductionCorsPolicy");
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.MapControllers();
 
 //socket
