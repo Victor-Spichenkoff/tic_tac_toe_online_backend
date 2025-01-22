@@ -1,4 +1,8 @@
-﻿using asp_rest_model.Sockets;
+﻿using asp_rest_model.Helpers;
+using asp_rest_model.Models;
+using asp_rest_model.Sockets;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using StateManager = asp_rest_model.Helpers.StateManager;
 
 namespace asp_rest_model.Controllers;
 
@@ -41,5 +45,39 @@ public class ChatController : ControllerBase
         var isFull = RoomManager.RoomFull(roomId);
 
         return Ok(isFull);
+    }
+
+    [HttpPost("/create/{roomId}")]
+    [ProducesResponseType(typeof(RoomCreationResponse), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    public IActionResult CreateRoom(string roomId)
+    {
+        // valid
+        if(RoomManager.RoomExists(roomId))
+            throw new GenericApiError("Room already exists, Connect to it!");
+        
+        if(string.IsNullOrWhiteSpace(roomId) || roomId == "0")
+            throw new GenericApiError("Invalid room ID");
+        
+        if (RoomManager.RoomFull(roomId))
+            throw new GenericApiError("Room is full");
+        
+        // creations
+        RoomManager.CreateRoom(roomId);
+
+        var roomStateInfos = RoomStateManager.AddNewRoom(roomId);
+        
+        var inGameState = InGameManager.GiveInitialInGameState();
+        
+        RoomCreationResponse response =  new ()
+        {
+            inGameState = inGameState, 
+            roomState = roomStateInfos
+        };
+        
+        if(!response.roomState.roomId.Equals(roomId))
+            throw new GenericApiError("Different room IDs");
+        
+        return Ok(response);
     }
 }

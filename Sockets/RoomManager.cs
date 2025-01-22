@@ -23,7 +23,7 @@ public class RoomManager
     public static bool RoomFull(string roomId)
     {
         if (!rooms.ContainsKey(roomId))
-            throw new GenericApiError($"ID {roomId} is not in use");
+            return false;
 
         return rooms[roomId].Count >= 2;
     }

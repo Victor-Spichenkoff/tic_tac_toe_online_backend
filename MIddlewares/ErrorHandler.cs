@@ -26,13 +26,12 @@ public class GlobalErrorHandlerMiddleware
 
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex); // Lida com a exceção
+            await HandleExceptionAsync(context, ex); // Lida com a exceção (2 com difetentes tipos)
         }
     }
 
     private static Task HandleExceptionAsync(HttpContext context, GenericApiError exception)
     {
-        // Define um código de status padrão para erros genéricos
         var statusCode = exception.StatusCode;
 
         var errorResponse = new
@@ -45,23 +44,18 @@ public class GlobalErrorHandlerMiddleware
         // Formata a resposta como JSON
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
-
-        var response = new ErrorResponse()
-        {
-            message = exception.Message,
-            status = exception.StatusCode,
-        };
         
         return context.Response.WriteAsJsonAsync(errorResponse);
     }
 
+    // Expecition normal (geral)
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         Console.WriteLine(exception.Message);
         var errorResponse = new
         {
             StatusCode = 500,
-            Message = "Erro interno!",
+            Message = "Internal Server Error",
             // Detailed = exception.Message // Remova para evitar expor detalhes sensíveis em produção
         };
 
