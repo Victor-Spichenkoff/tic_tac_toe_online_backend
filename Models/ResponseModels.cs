@@ -1,7 +1,7 @@
 ﻿namespace asp_rest_model.Models;
 
-public class RoomCreationResponse
+public class AllStatesResponse
 {
-    public InGameState inGameState { get; set; }
+    public required InGameState inGameState { get; set; }
     public RoomState roomState { get; set; }
 }

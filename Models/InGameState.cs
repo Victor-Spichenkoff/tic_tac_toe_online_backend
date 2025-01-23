@@ -6,12 +6,14 @@ namespace asp_rest_model.Models;
  */
 public class InGameState
 {
-        public bool isFinished;
-        public bool player1Wins;
-        public bool player2Wins;
+        public required string roomId { get; set; }
+        public bool isFinished { get; set; }
+        public bool player1Wins { get; set; }
+        public bool player2Wins { get; set; }
+        // public required int[] state { get; set; }
         public required SquareOptions[] state;
-        public bool isPLayer1Turn;
-        public bool isPlayer2Turn;
+        public bool isPLayer1Turn { get; set; }
+        public bool isPlayer2Turn { get; set; }
 }
 
 

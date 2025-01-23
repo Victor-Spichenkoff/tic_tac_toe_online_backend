@@ -46,13 +46,18 @@ public class ChatController : ControllerBase
 
         return Ok(isFull);
     }
-
+    
+    
     [HttpPost("/create/{roomId}")]
-    [ProducesResponseType(typeof(RoomCreationResponse), 200)]
+    [ProducesResponseType(typeof(AllStatesResponse), 200)]
     [ProducesResponseType(typeof(string), 400)]
     public IActionResult CreateRoom(string roomId)
     {
         // valid
+        if(roomId.Contains(" "))
+            throw new GenericApiError("Spaces are not allowed!");
+            
+        
         if(RoomManager.RoomExists(roomId))
             throw new GenericApiError("Room already exists, Connect to it!");
         
@@ -65,19 +70,61 @@ public class ChatController : ControllerBase
         // creations
         RoomManager.CreateRoom(roomId);
 
-        var roomStateInfos = RoomStateManager.AddNewRoom(roomId);
+        var roomStateInfos = new RoomState() { roomId = roomId};//RoomStateManager.AddNewRoom(roomId);
         
-        var inGameState = InGameManager.GiveInitialInGameState();
+        var inGameStateInfos = InGameManager.GiveInitialInGameState(roomId);
         
-        RoomCreationResponse response =  new ()
+        //cadastrando
+        InGameManager.AddNewInGameState(inGameStateInfos);
+        RoomStateManager.AddNewRoom(roomId);// cria com o default state
+
+        
+        AllStatesResponse response =  new ()
         {
-            inGameState = inGameState, 
+            inGameState = inGameStateInfos, 
             roomState = roomStateInfos
         };
         
-        if(!response.roomState.roomId.Equals(roomId))
-            throw new GenericApiError("Different room IDs");
+        return Ok(response);
+    }
+
+
+    [HttpPost("/join/{roomId}")]
+    [ProducesResponseType(typeof(AllStatesResponse), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    public IActionResult JoinRoom(string roomId)
+    {
+        // já conectado mesmo; Talvez precise de uma verificação para InGame e RoomState
+        if(!RoomManager.RoomExists(roomId))
+            throw new GenericApiError("Room doesn't exists");
+        
+        if(RoomManager.RoomFull(roomId))
+            throw new GenericApiError("Room Full");
+
+        var newRoomInfos = RoomStateManager.GetRoomStateById(roomId);
+        
+        if(newRoomInfos == null)
+            throw new GenericApiError("Room doesn't exists");
+        
+        if(newRoomInfos.isPLayer1Connected == false)
+            newRoomInfos.isPLayer1Connected = true;
+        else if (newRoomInfos.isPLayer2Connected == false)
+            newRoomInfos.isPLayer2Connected = true;
+
+        var success = RoomStateManager.UpdateRoom(newRoomInfos);
+        
+        if(!success)
+            throw new GenericApiError("Failed to update room");
+        
+        var inGameStateInfos = InGameManager.GetInGameStateById(roomId);
+
+        var response = new AllStatesResponse()
+        {
+            inGameState = inGameStateInfos,
+            roomState = newRoomInfos
+        };
         
         return Ok(response);
+
     }
 }
