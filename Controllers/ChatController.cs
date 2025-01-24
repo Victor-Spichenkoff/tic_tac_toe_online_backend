@@ -54,7 +54,7 @@ public class ChatController : ControllerBase
     public IActionResult CreateRoom(string roomId)
     {
         // valid
-        if(roomId.Contains(" "))
+        if(roomId.Contains(' '))
             throw new GenericApiError("Spaces are not allowed!");
             
         
@@ -105,9 +105,14 @@ public class ChatController : ControllerBase
         
         if(newRoomInfos == null)
             throw new GenericApiError("Room doesn't exists");
-        
-        if(newRoomInfos.isPLayer1Connected == false)
+
+        var playerIndex = 2;
+
+        if (newRoomInfos.isPLayer1Connected == false)
+        {
+            playerIndex = 1;
             newRoomInfos.isPLayer1Connected = true;
+        }
         else if (newRoomInfos.isPLayer2Connected == false)
             newRoomInfos.isPLayer2Connected = true;
 
@@ -118,13 +123,13 @@ public class ChatController : ControllerBase
         
         var inGameStateInfos = InGameManager.GetInGameStateById(roomId);
 
-        var response = new AllStatesResponse()
+        var response = new AllStateResponseWithPLayerIndex()
         {
             inGameState = inGameStateInfos,
-            roomState = newRoomInfos
+            roomState = newRoomInfos,
+            playerIndex = playerIndex
         };
         
         return Ok(response);
-
     }
 }

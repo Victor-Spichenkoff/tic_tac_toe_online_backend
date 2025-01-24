@@ -10,8 +10,8 @@ public class InGameState
         public bool isFinished { get; set; }
         public bool player1Wins { get; set; }
         public bool player2Wins { get; set; }
-        // public required int[] state { get; set; }
-        public required SquareOptions[] state;
+        public required int[] state { get; set; }
+        // public required SquareOptions[] state;
         public bool isPLayer1Turn { get; set; }
         public bool isPlayer2Turn { get; set; }
 }

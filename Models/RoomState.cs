@@ -8,6 +8,4 @@ public class RoomState()
     public int player1Points { get; set; } = 0;
     public int player2Points { get; set; } = 0;
     public int drawsCount { get; set; } = 0;
-    
-    
 }
