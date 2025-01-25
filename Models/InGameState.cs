@@ -17,7 +17,7 @@ public class InGameState
 }
 
 
-public class ReciveInfosObject {
+public class ReceiveInfosObject {
         PlayerIndex playerIndex;
         private int choosePosition;
 }

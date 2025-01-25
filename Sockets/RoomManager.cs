@@ -28,8 +28,6 @@ public class RoomManager
         if (!rooms.ContainsKey(roomId))
             return false;
 
-        return rooms[roomId].Count >= 2;
+        return rooms[roomId].Count > 2;
     }
-
-    
 }

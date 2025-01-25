@@ -28,4 +28,26 @@ public class InGameController: ControllerBase
 
         return Ok(response);
     }
+
+
+    [HttpPost("/disconnect/{playerIndex}/{roomId}")]
+    public IActionResult DeleteOnDesconection(int playerIndex, string roomId)
+    {
+        var roomInfo = RoomStateManager.GetRoomStateById(roomId);
+        var inGameInfo = InGameManager.GetInGameStateById(roomId);
+        
+        if(inGameInfo == null || roomInfo == null)
+            throw new GenericApiError("Room doesn't exists");
+        
+        if(playerIndex == 1)
+            roomInfo.isPLayer1Connected = false;
+        else if(playerIndex == 2)
+            roomInfo.isPLayer2Connected = false;
+        
+        RoomStateManager.UpdateRoom(roomInfo);
+
+        Console.WriteLine($"Desligando: {playerIndex} em ID - {roomId}");
+        
+        return Ok(true);
+    }
 }

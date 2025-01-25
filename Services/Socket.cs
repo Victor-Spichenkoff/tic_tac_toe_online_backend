@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
+using asp_rest_model.Helpers;
 using asp_rest_model.Sockets;
 
 namespace asp_rest_model.Services;
@@ -32,9 +33,15 @@ public class SocketService
 
             if (result.MessageType == WebSocketMessageType.Text)
             {
+                // message -> aquilo que recebe do front (vem como json)
                 var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 Console.WriteLine($"[Room: {roomId}] Received: {message}");
 
+                // todo
+                // processar aqui
+                var inGameNewState = InGameManager.HandleActionReceive(roomId, message);
+                Console.WriteLine(inGameNewState);
+                
                 // Retransmitir a mensagem para todos os WebSockets da sala
                 await BroadcastMessageAsync(message, roomId);
             }

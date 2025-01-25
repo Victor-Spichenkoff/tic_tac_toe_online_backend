@@ -16,7 +16,7 @@ public static class StateManager
     public static int[] GiveResetState()=>
     // public static SquareOptions[] GiveResetState()=>
         [
-            0, 0, 1,
+            0, 0, 0,
             0, 0, 0,
             0, 0, 0
         ];

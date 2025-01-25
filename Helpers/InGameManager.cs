@@ -1,4 +1,6 @@
-﻿using asp_rest_model.Models;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using asp_rest_model.Models;
 
 namespace asp_rest_model.Helpers;
 
@@ -35,5 +37,16 @@ public class InGameManager
         };
 
         return state;
+    }
+    
+    
+    // ações que se refletem no front
+    public static InGameState HandleActionReceive(string roomId, string inGameAsString)
+    {
+        var inGameObject = FormatsHelpers.ParseInGameFromString(inGameAsString);
+        if (inGameObject == null)
+            throw new GenericApiError("FUNCIONOU");
+
+        return inGameObject;
     }
 }
