@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
+using System.Text.Json;
 using asp_rest_model.Helpers;
 using asp_rest_model.Sockets;
 
@@ -41,16 +42,20 @@ public class SocketService
                 // processar aqui
                 var inGameNewState = InGameManager.HandleActionReceive(roomId, message);
                 Console.WriteLine(inGameNewState);
+
+                string inGameNewStateString = JsonSerializer.Serialize(inGameNewState);
                 
-                // Retransmitir a mensagem para todos os WebSockets da sala
-                await BroadcastMessageAsync(message, roomId);
+                // não preciso mexer aqui, só passar a res em string json
+                // Retransmitir a mensagem para todos os WebSockets da sala, em texto
+                // await BroadcastMessageAsync(message, roomId);
+                await BroadcastMessageAsync(inGameNewStateString, roomId);
             }
             else if (result.MessageType == WebSocketMessageType.Close)
             {
                 Console.WriteLine("WebSocket closed.");
                 await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by client",
                     CancellationToken.None);
-            }
+            } 
         }
 
         // remover aquela sala ao finalizar

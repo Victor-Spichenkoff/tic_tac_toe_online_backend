@@ -18,8 +18,9 @@ public class InGameState
 
 
 public class ReceiveInfosObject {
-        PlayerIndex playerIndex;
-        private int choosePosition;
+        public int playerIndex;
+        // required PlayerIndex playerIndex;
+        public int choosePosition;
 }
 
 

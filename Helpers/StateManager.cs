@@ -25,4 +25,21 @@ public static class StateManager
     {
         return CheckWinResponse.NoWinner;
     }
+    
+    
+    public static int[] ChangeOnePosition (int choosePosition, int playerIndex, int[] currentState)
+    {
+        if(currentState[choosePosition] != 0)
+            throw new GenericApiError("Position already taken");
+        
+        // todo
+        // verificar vitória aqui, criar nova função
+        
+        
+        currentState[playerIndex] = choosePosition;
+        
+        Console.WriteLine("NEw state: ", currentState.ToString());
+        
+        return currentState;
+    }
 }

@@ -5,14 +5,12 @@ namespace asp_rest_model.Helpers;
 
 public class FormatsHelpers
 {
-    public static InGameState? ParseInGameFromString(string inGameAsString)
+    public static ReceiveInfosObject? ParseReceiveFromString(string inGameAsString)
     {
-        var toError = "{\"nhe\":\"nhe1\"}";
         try
         {
-            var inGameObject = JsonSerializer.Deserialize<InGameState>(toError);
-            // var inGameObject = JsonSerializer.Deserialize<InGameState>(inGameAsString);
-            return InGameManager.GiveInitialInGameState("1");
+            var receiveObject = JsonSerializer.Deserialize<ReceiveInfosObject>(inGameAsString);
+            return receiveObject;
         }
         catch
         {

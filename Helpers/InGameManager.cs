@@ -38,15 +38,63 @@ public class InGameManager
 
         return state;
     }
+
+    public static InGameState ToggleCurrentPlayerTurn(string roomId)
+    {
+        var inGameState = GetInGameStateById(roomId);
+        
+        if(inGameState == null)
+            throw new GenericApiError("Room does not exist");
+        
+        if (inGameState.isPLayer1Turn)
+        {
+            inGameState.isPLayer1Turn = false;
+            inGameState.isPLayer1Turn = true;
+        }
+        else if (inGameState.isPlayer2Turn)
+        {
+            inGameState.isPLayer1Turn = true;
+            inGameState.isPlayer2Turn = false;
+        }
+
+        return inGameState;
+    }
+
+    public static InGameState ChangeState(string roomId, int choosePosition, int playerIndex)
+    {
+        if (choosePosition < 0 || choosePosition > 8)
+            throw new GenericApiError("Invalid move position");
+        
+        var inGameState = GetInGameStateById(roomId);
+        
+        inGameState.state = StateManager.ChangeOnePosition(choosePosition, playerIndex, inGameState.state);
+            
+        //todo
+        // verificar se está ganhou e enviar globalmente
+
+        return inGameState;
+    }
     
     
     // ações que se refletem no front
-    public static InGameState HandleActionReceive(string roomId, string inGameAsString)
+    public static InGameState HandleActionReceive(string roomId, string receiveObjectString)
     {
-        var inGameObject = FormatsHelpers.ParseInGameFromString(inGameAsString);
-        if (inGameObject == null)
+        //TODo
+        //não está mudando o state, nem playerXTurn
+        var receiveObject = FormatsHelpers.ParseReceiveFromString(receiveObjectString);
+        if (receiveObject == null)
             throw new GenericApiError("FUNCIONOU");
 
-        return inGameObject;
+        
+        ToggleCurrentPlayerTurn(roomId);
+
+        var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
+        
+        // var finalInGameState = InGameManager.GetInGameStateById(roomId);
+        
+        if(finalInGameState == null)
+            throw new GenericApiError("Room does not exist");
+        
+        return finalInGameState;
     }
 }
