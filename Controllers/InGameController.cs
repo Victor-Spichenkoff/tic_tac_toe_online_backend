@@ -45,7 +45,6 @@ public class InGameController: ControllerBase
             roomInfo.isPLayer2Connected = false;
         
         RoomStateManager.UpdateRoom(roomInfo);
-
         Console.WriteLine($"Desligando: {playerIndex} em ID - {roomId}");
         
         return Ok(true);

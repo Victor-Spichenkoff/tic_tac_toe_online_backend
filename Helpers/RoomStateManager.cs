@@ -5,6 +5,7 @@ namespace asp_rest_model.Helpers;
 
 public class RoomStateManager
 {
+    //ERRO AQUI, retorna um básico, só o id está certo, tá desligando sem precisar
     public static List<RoomState> roomStates = new List<RoomState>();
 
     public static RoomState AddNewRoom(string roomId)
@@ -20,15 +21,16 @@ public class RoomStateManager
         };
         
         RoomStateManager.roomStates.Add(initialState);
-        // TODO
-        // não retorna o correto, só um objeto vazio
+        
         return initialState;
     }
 
 
     public static RoomState? GetRoomStateById(string roomId)
     {
-        return roomStates.FirstOrDefault(x => x.roomId == roomId);
+ 
+        var result = roomStates.FirstOrDefault(x => x.roomId == roomId);
+        return result;
     }
 
     public static bool UpdateRoom(RoomState newRoomState)
