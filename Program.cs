@@ -23,9 +23,9 @@ builder.Services.ConfigureCors(builder.Configuration, builder.Environment.Enviro
 var app = builder.Build();
 
 //socket
+app.UseMiddleware<GlobalErrorHandlerMiddleware>();//primeiro, para pegar qualquer erro
 app.UseWebSockets();
 app.UseMiddleware<SocketMiddleware>();
-app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

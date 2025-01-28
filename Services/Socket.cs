@@ -39,7 +39,7 @@ public class SocketService
                 Console.WriteLine($"[Room: {roomId}] Received: {message}");
 
                 // todo
-                // processar aqui
+                // colocar try (catch) aqui
                 var inGameNewState = InGameManager.HandleActionReceive(roomId, message);
                 Console.WriteLine(inGameNewState);
 
@@ -49,6 +49,9 @@ public class SocketService
                 // Retransmitir a mensagem para todos os WebSockets da sala, em texto
                 // await BroadcastMessageAsync(message, roomId);
                 await BroadcastMessageAsync(inGameNewStateString, roomId);
+                //todo
+                //colocar catch aqui
+                //converter em string e mandar
             }
             else if (result.MessageType == WebSocketMessageType.Close)
             {

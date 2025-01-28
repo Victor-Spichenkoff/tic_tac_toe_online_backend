@@ -36,7 +36,7 @@ public static class StateManager
         // verificar vitória aqui, criar nova função
         
         
-        currentState[playerIndex] = choosePosition;
+        currentState[choosePosition] = playerIndex;
         
         Console.WriteLine("NEw state: ", currentState.ToString());
         

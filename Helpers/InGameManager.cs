@@ -49,7 +49,7 @@ public class InGameManager
         if (inGameState.isPLayer1Turn)
         {
             inGameState.isPLayer1Turn = false;
-            inGameState.isPLayer1Turn = true;
+            inGameState.isPlayer2Turn = true;
         }
         else if (inGameState.isPlayer2Turn)
         {
@@ -86,7 +86,7 @@ public class InGameManager
             throw new GenericApiError("FUNCIONOU");
 
         
-        ToggleCurrentPlayerTurn(roomId);
+        // ToggleCurrentPlayerTurn(roomId);
 
         var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
         

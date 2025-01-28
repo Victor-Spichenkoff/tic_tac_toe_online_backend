@@ -56,7 +56,6 @@ public class ChatController : ControllerBase
         // valid
         if(roomId.Contains(' '))
             throw new GenericApiError("Spaces are not allowed!");
-            
         
         if(RoomManager.RoomExists(roomId))
             throw new GenericApiError("Room already exists, Connect to it!");
