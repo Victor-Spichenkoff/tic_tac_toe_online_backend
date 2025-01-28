@@ -11,3 +11,10 @@ public class AllStateResponseWithPLayerIndex : AllStatesResponse
 {
     public required int playerIndex { get; set; } 
 }
+
+public class SocketInGameResponse
+{
+    public required bool isError { get; set; }
+    public InGameState? inGameState { get; set; }
+    public string? errorMessage { get; set; }
+}

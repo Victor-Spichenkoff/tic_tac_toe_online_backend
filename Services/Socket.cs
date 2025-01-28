@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text.Json;
+using asp_rest_model.handlers;
 using asp_rest_model.Helpers;
 using asp_rest_model.Sockets;
 
@@ -13,7 +14,6 @@ using System.Text;
 // usando salas
 public class SocketService
 {
-
     //precisa pegar no middleware e passar para o handler
     public async Task HandleWebSocketAsync(WebSocket webSocket, string roomId)
     {
@@ -38,27 +38,18 @@ public class SocketService
                 var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 Console.WriteLine($"[Room: {roomId}] Received: {message}");
 
-                // todo
-                // colocar try (catch) aqui
-                var inGameNewState = InGameManager.HandleActionReceive(roomId, message);
-                Console.WriteLine(inGameNewState);
+                // já cuidada de tudo, retorna o SocketResponseObject
+                var socketResponseObject = SocketMessageHandler.HandleMessage(roomId, message);
 
-                string inGameNewStateString = JsonSerializer.Serialize(inGameNewState);
-                
-                // não preciso mexer aqui, só passar a res em string json
-                // Retransmitir a mensagem para todos os WebSockets da sala, em texto
-                // await BroadcastMessageAsync(message, roomId);
-                await BroadcastMessageAsync(inGameNewStateString, roomId);
-                //todo
-                //colocar catch aqui
-                //converter em string e mandar
+                var finalString = FormatsHelpers.StringifySocketResponse(socketResponseObject);
+                await BroadcastMessageAsync(finalString, roomId);
             }
             else if (result.MessageType == WebSocketMessageType.Close)
             {
                 Console.WriteLine("WebSocket closed.");
                 await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by client",
                     CancellationToken.None);
-            } 
+            }
         }
 
         // remover aquela sala ao finalizar

@@ -86,7 +86,7 @@ public class InGameManager
             throw new GenericApiError("FUNCIONOU");
 
         
-        // ToggleCurrentPlayerTurn(roomId);
+        ToggleCurrentPlayerTurn(roomId);
 
         var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
         

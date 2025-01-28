@@ -17,4 +17,10 @@ public class FormatsHelpers
             return null;
         }
     }
+
+
+    public static string StringifySocketResponse(SocketInGameResponse socketResponse)
+    {
+        return JsonSerializer.Serialize(socketResponse);
+    }
 }
