@@ -85,10 +85,10 @@ public class InGameManager
         if (receiveObject == null)
             throw new GenericApiError("FUNCIONOU");
 
+        var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
         
         ToggleCurrentPlayerTurn(roomId);
 
-        var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
         
         // var finalInGameState = InGameManager.GetInGameStateById(roomId);
         
