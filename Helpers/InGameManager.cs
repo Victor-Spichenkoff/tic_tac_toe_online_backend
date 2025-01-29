@@ -85,12 +85,17 @@ public class InGameManager
         if (receiveObject == null)
             throw new GenericApiError("FUNCIONOU");
 
-        var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
+        ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
+        // var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
         
         ToggleCurrentPlayerTurn(roomId);
 
+        //TODO 
+        // check de vitoria
+        //
         
-        // var finalInGameState = InGameManager.GetInGameStateById(roomId);
+        // final mesmo
+        var finalInGameState = InGameManager.GetInGameStateById(roomId);
         
         if(finalInGameState == null)
             throw new GenericApiError("Room does not exist");

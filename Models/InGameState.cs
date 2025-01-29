@@ -10,6 +10,7 @@ public class InGameState
         public bool isFinished { get; set; }
         public bool player1Wins { get; set; }
         public bool player2Wins { get; set; }
+        public bool isDrawn { get; set; } = false;
         public required int[] state { get; set; }
         // public required SquareOptions[] state;
         public bool isPLayer1Turn { get; set; }
@@ -22,6 +23,7 @@ public class ReceiveInfosObject {
         // required PlayerIndex playerIndex;
         public int choosePosition { get; set; }
 }
+
 
 
 public enum SquareOptions
