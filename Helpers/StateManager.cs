@@ -32,13 +32,7 @@ public static class StateManager
         if(currentState[choosePosition] != 0)
             throw new GenericApiError("Position already taken");
         
-        // todo
-        // verificar vitória aqui, criar nova função
-        
-        
         currentState[choosePosition] = playerIndex;
-        
-        Console.WriteLine("NEw state: ", currentState.ToString());
         
         return currentState;
     }

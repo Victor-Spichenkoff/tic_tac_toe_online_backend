@@ -45,4 +45,26 @@ public class RoomStateManager
 
         return true;
     }
+
+    public static void AddDrawToRoom(string roomId)
+    {
+        var room = roomStates.FirstOrDefault(x => x.roomId == roomId);
+        if(room == null)
+            throw new GenericApiError("Room doesn't exist");
+        
+        room.drawsCount++;
+    }
+    
+    public static void AddWinToPlayer(string roomId, int playerIndex)
+    {
+        var room = roomStates.FirstOrDefault(x => x.roomId == roomId);
+        
+        if(room == null)
+            throw new GenericApiError("Room doesn't exist");
+
+        if (playerIndex == 1)
+            room.player1Points++;
+        else if (playerIndex == 2)
+            room.player2Points++;
+    }
 }
