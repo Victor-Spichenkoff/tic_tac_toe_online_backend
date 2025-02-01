@@ -39,6 +39,11 @@ public class InGameManager
         return state;
     }
 
+    public static void DeleteInGameState(string roomId)
+    {
+        InGameManager.InGameStates.Remove(InGameManager.InGameStates.FirstOrDefault(x => x.roomId == roomId));
+    }
+
     public static InGameState ToggleCurrentPlayerTurn(string roomId)
     {
         var inGameState = GetInGameStateById(roomId);

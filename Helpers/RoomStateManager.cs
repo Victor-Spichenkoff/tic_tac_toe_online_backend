@@ -67,4 +67,15 @@ public class RoomStateManager
         else if (playerIndex == 2)
             room.player2Points++;
     }
+
+    public static void DeleteRoom(string roomId)
+    {
+        var room = roomStates.FirstOrDefault(x => x.roomId == roomId);
+        roomStates.Remove(room);
+    }
+
+    public static bool RoomWithIdExists(string roomId)
+    {
+        return roomStates.Any(x => x.roomId == roomId);
+    }
 }
