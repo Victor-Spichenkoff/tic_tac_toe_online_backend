@@ -51,8 +51,11 @@ public class RoomStateManager
         var room = roomStates.FirstOrDefault(x => x.roomId == roomId);
         if(room == null)
             throw new GenericApiError("Room doesn't exist");
-        
+
+        room.matchCount++;
         room.drawsCount++;
+
+        UpdateRoom(room);
     }
     
     public static void AddWinToPlayer(string roomId, int playerIndex)
@@ -62,10 +65,14 @@ public class RoomStateManager
         if(room == null)
             throw new GenericApiError("Room doesn't exist");
 
+        room.matchCount++;
+        
         if (playerIndex == 1)
             room.player1Points++;
         else if (playerIndex == 2)
             room.player2Points++;
+        
+        UpdateRoom(room);
     }
 
     public static void DeleteRoom(string roomId)

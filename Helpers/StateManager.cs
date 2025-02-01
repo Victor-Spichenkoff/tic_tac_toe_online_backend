@@ -16,10 +16,15 @@ public static class StateManager
     public static int[] GiveResetState()=>
     // public static SquareOptions[] GiveResetState()=>
         [
-            0, 0, 0,
-            0, 0, 0,
+            1, 2, 0,
+            1, 2, 0,
             0, 0, 0
         ];
+    // [
+    //         0, 0, 0,
+    //         0, 0, 0,
+    //         0, 0, 0
+    //     ];
 
     public static CheckWinResponse CheckForWinner()
     {

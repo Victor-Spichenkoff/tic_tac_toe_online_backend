@@ -22,6 +22,7 @@ public class ReceiveInfosObject {
         public int playerIndex { get; set; }
         // required PlayerIndex playerIndex;
         public int choosePosition { get; set; }
+        public bool? isResetOperation { get; set; }
 }
 
 

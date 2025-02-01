@@ -33,6 +33,12 @@ public class SocketMiddleware(RequestDelegate next, SocketService socketService)
             }
             catch
             {
+                if (context.Response.HasStarted)
+                {
+                    Console.WriteLine("Response has already started");
+                    return;
+                }
+                
                 context.Response.StatusCode = 400;
                 var res = new SocketInGameResponse()
                 {
@@ -40,7 +46,7 @@ public class SocketMiddleware(RequestDelegate next, SocketService socketService)
                     isError = true
                 };
                 await context.Response.WriteAsync(JsonSerializer.Serialize(res));
-                    await _next(context);
+                    // await _next(context);
                 // await context.Response.WriteAsync("Room with problems, please create a new one");
             }
 

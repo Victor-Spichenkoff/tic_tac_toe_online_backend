@@ -39,6 +39,7 @@ public class InGameManager
         return state;
     }
 
+    // TODO -> Verificar se está persistindo as atualizações no state[]
     public static void DeleteInGameState(string roomId)
     {
         InGameManager.InGameStates.Remove(InGameManager.InGameStates.FirstOrDefault(x => x.roomId == roomId));
@@ -61,6 +62,8 @@ public class InGameManager
             inGameState.isPLayer1Turn = true;
             inGameState.isPlayer2Turn = false;
         }
+        
+        UpdateFullState(inGameState);
 
         return inGameState;
     }
@@ -74,8 +77,7 @@ public class InGameManager
 
         inGameState.state = StateManager.ChangeOnePosition(choosePosition, playerIndex, inGameState.state);
 
-        //todo
-        // verificar se está ganhou e enviar globalmente
+        UpdateFullState(inGameState);
 
         return inGameState;
     }
@@ -84,61 +86,67 @@ public class InGameManager
     // ações que se refletem no front
     public static InGameState HandleActionReceive(string roomId, string receiveObjectString)
     {
-        //TODo
-        //não está mudando o state, nem playerXTurn
         var receiveObject = FormatsHelpers.ParseReceiveFromString(receiveObjectString);
         if (receiveObject == null)
-            throw new GenericApiError("FUNCIONOU");
+            throw new GenericApiError("Object is poorly formatted");
 
         ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
         // var finalInGameState = ChangeState(roomId, receiveObject.choosePosition, receiveObject.playerIndex);
 
         ToggleCurrentPlayerTurn(roomId);
 
-        //TODO 
-        // check de vitoria
-        //
 
-        // final mesmo
-        var finalInGameState = InGameManager.GetInGameStateById(roomId);
-
-        if (finalInGameState == null)
+        var semiFinalInGameState = InGameManager.GetInGameStateById(roomId);
+        
+        if (semiFinalInGameState == null)
             throw new GenericApiError("Room does not exist");
 
         // WIN CHECKS
-        var isDraw = StateManager.CheckForDraw(finalInGameState.state);
-        var isPLayer1Victory = StateManager.CheckWinForPlayer(1, finalInGameState.state);
-        var isPLayer2Victory = StateManager.CheckWinForPlayer(1, finalInGameState.state);
+        var isDraw = StateManager.CheckForDraw(semiFinalInGameState.state);
+        var isPLayer1Victory = StateManager.CheckWinForPlayer(1, semiFinalInGameState.state);
+        var isPLayer2Victory = StateManager.CheckWinForPlayer(2, semiFinalInGameState.state);
         // 
         if (isDraw)
         {
-            finalInGameState.isDrawn = true;
+            semiFinalInGameState.isDrawn = true;
             RoomStateManager.AddDrawToRoom(roomId);
         }
         else
         {
             if (isPLayer1Victory)
             {
-                finalInGameState.isPLayer1Turn = true;
+                semiFinalInGameState.isPLayer1Turn = true;
                 RoomStateManager.AddWinToPlayer(roomId, 1);
             }
 
             if (isPLayer2Victory)
             {
                 RoomStateManager.AddWinToPlayer(roomId, 2);
-                finalInGameState.isPlayer2Turn = true;
+                semiFinalInGameState.isPlayer2Turn = true;
             }
         }
 
         // states finais gerais
         if (isDraw || isPLayer1Victory || isPLayer2Victory)
         {
-            finalInGameState.isFinished = true;
-            finalInGameState.isPLayer1Turn = false;
-            finalInGameState.isPlayer2Turn = false;
+            semiFinalInGameState.isFinished = true;
+            semiFinalInGameState.isPLayer1Turn = false;
+            semiFinalInGameState.isPlayer2Turn = false;
         }
+        
+        UpdateFullState(semiFinalInGameState);
 
 
+        var finalInGameState = InGameManager.GetInGameStateById(roomId);
         return finalInGameState;
+    }
+
+
+    public static void UpdateFullState(InGameState newInGameState)
+    {
+        var id = newInGameState.roomId;
+        InGameStates.RemoveAll(x => x.roomId == id);
+
+        InGameStates.Add(newInGameState);
     }
 }

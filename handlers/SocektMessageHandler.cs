@@ -12,11 +12,21 @@ public static class SocketMessageHandler
      */
     public static SocketInGameResponse HandleMessage(string roomId, string message)
     {
-        InGameState? inGameState;
-
         try
         {
-            inGameState = InGameManager.HandleActionReceive(roomId, message);
+            var bodyObject = FormatsHelpers.ParseReceiveFromString(message);
+            if (bodyObject == null)
+                throw new FormatException("Invalid message");
+
+                if (bodyObject.isResetOperation is true)
+                {
+                    var restartedResponse = HandleResetMode(roomId);
+                    return restartedResponse;
+                }
+
+            // resposta normal (success ou erro)
+            var normalResponse = HandleNormalMode(roomId, message);
+            return normalResponse;
         }
         catch (GenericApiError myError)
         {
@@ -30,14 +40,52 @@ public static class SocketMessageHandler
         {
             Console.Error.WriteLine(ex);
             Console.WriteLine("Erro inesperado no socket 🔝🔝🔝");
-            
+
             return new SocketInGameResponse()
             {
                 isError = false,
                 errorMessage = "Unexpected error with connection!",
             };
         }
+    }
 
+    //não lida com room, apenas reseta o ingame
+    private static SocketInGameResponse HandleResetMode(string roomId)
+    {
+        var inGameCurrentState = InGameManager.GetInGameStateById(roomId);
+        var roomInfos = RoomStateManager.GetRoomStateById(roomId);
+
+        if (inGameCurrentState == null || roomInfos == null)
+            throw new GenericApiError("Room doesn't exist");
+
+        inGameCurrentState.isFinished = false;
+        inGameCurrentState.isDrawn = false;
+        inGameCurrentState.state = StateManager.GiveResetState();
+        inGameCurrentState.player1Wins = false;
+        inGameCurrentState.player2Wins = false;
+
+        // is par == true -> o x joga
+        var isEven = GeneralHelper.IsEven(roomInfos.matchCount);
+
+        inGameCurrentState.isPLayer1Turn = isEven;
+        inGameCurrentState.isPlayer2Turn = !isEven;
+
+        InGameManager.UpdateFullState(inGameCurrentState);
+        // para testes 
+        var newInGameState = InGameManager.GetInGameStateById(roomId);
+
+        return new SocketInGameResponse()
+        {
+            isError = false,
+            inGameState = inGameCurrentState,
+        };
+    }
+
+
+    // Em jogo mesmo, nada de diferente
+    private static SocketInGameResponse HandleNormalMode(string roomId, string message)
+    {
+        InGameState inGameState = InGameManager.HandleActionReceive(roomId, message);
 
         return new SocketInGameResponse()
         {
