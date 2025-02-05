@@ -135,10 +135,9 @@ public class InGameManager
         }
         
         UpdateFullState(semiFinalInGameState);
-
-
+        
         var finalInGameState = InGameManager.GetInGameStateById(roomId);
-        return finalInGameState;
+        return semiFinalInGameState;
     }
 
 

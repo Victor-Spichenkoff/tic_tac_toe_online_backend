@@ -6,7 +6,6 @@ using StateManager = asp_rest_model.Helpers.StateManager;
 
 namespace asp_rest_model.Controllers;
 
-
 using Microsoft.AspNetCore.Mvc;
 using asp_rest_model.Services;
 
@@ -36,8 +35,8 @@ public class ChatController : ControllerBase
 
         return Ok(exists);
     }
-    
-    
+
+
     [HttpGet("/room/isFull/{roomId}")]
     [ProducesResponseType(typeof(bool), 200)]
     public IActionResult GetRoomFullState(string roomId)
@@ -46,44 +45,44 @@ public class ChatController : ControllerBase
 
         return Ok(isFull);
     }
-    
-    
+
+
     [HttpPost("/create/{roomId}")]
     [ProducesResponseType(typeof(AllStatesResponse), 200)]
     [ProducesResponseType(typeof(string), 400)]
     public IActionResult CreateRoom(string roomId)
     {
         // valid
-        if(roomId.Contains(' '))
+        if (roomId.Contains(' '))
             throw new GenericApiError("Spaces are not allowed!");
-        
-        if(RoomManager.RoomExists(roomId) || RoomStateManager.RoomWithIdExists(roomId))
+
+        if (RoomManager.RoomExists(roomId) || RoomStateManager.RoomWithIdExists(roomId))
             throw new GenericApiError("Room already exists, Connect to it!");
-        
-        if(string.IsNullOrWhiteSpace(roomId) || roomId == "0")
+
+        if (string.IsNullOrWhiteSpace(roomId) || roomId == "0")
             throw new GenericApiError("Invalid room ID");
-        
+
         if (RoomManager.RoomFull(roomId))
             throw new GenericApiError("Room is full");
-        
+
         // creations
         RoomManager.CreateRoom(roomId);
 
-        var roomStateInfos = new RoomState() { roomId = roomId};//RoomStateManager.AddNewRoom(roomId);
-        
+        var roomStateInfos = new RoomState() { roomId = roomId }; //RoomStateManager.AddNewRoom(roomId);
+
         var inGameStateInfos = InGameManager.GiveInitialInGameState(roomId);
-        
+
         //cadastrando
         InGameManager.AddNewInGameState(inGameStateInfos);
-        RoomStateManager.AddNewRoom(roomId);// cria com o default state
+        RoomStateManager.AddNewRoom(roomId); // cria com o default state
 
-        
-        AllStatesResponse response =  new ()
+
+        AllStatesResponse response = new()
         {
-            inGameState = inGameStateInfos, 
+            inGameState = inGameStateInfos,
             roomState = roomStateInfos
         };
-        
+
         return Ok(response);
     }
 
@@ -94,15 +93,15 @@ public class ChatController : ControllerBase
     public IActionResult JoinRoom(string roomId)
     {
         // já conectado mesmo; Talvez precise de uma verificação para InGame e RoomState
-        if(!RoomManager.RoomExists(roomId))
+        if (!RoomManager.RoomExists(roomId))
             throw new GenericApiError("Room doesn't exists");
-        
-        if(RoomManager.RoomFull(roomId))
+
+        if (RoomManager.RoomFull(roomId))
             throw new GenericApiError("Room Full");
 
         var newRoomInfos = RoomStateManager.GetRoomStateById(roomId);
-        
-        if(newRoomInfos == null)
+
+        if (newRoomInfos == null)
             throw new GenericApiError("Room doesn't exists");
 
         var playerIndex = 2;
@@ -114,11 +113,15 @@ public class ChatController : ControllerBase
         }
         else if (newRoomInfos.isPLayer2Connected == false)
             newRoomInfos.isPLayer2Connected = true;
+        else
+            throw new GenericApiError("Both players are connected!");
 
         var success = RoomStateManager.UpdateRoom(newRoomInfos);
-        
-        if(!success)
+
+        if (!success)
             throw new GenericApiError("Failed to update room");
+
+        RoomStateManager.UpdateRoom(newRoomInfos);
         
         var inGameStateInfos = InGameManager.GetInGameStateById(roomId);
 
@@ -128,7 +131,7 @@ public class ChatController : ControllerBase
             roomState = newRoomInfos,
             playerIndex = playerIndex
         };
-        
+
         return Ok(response);
     }
 }

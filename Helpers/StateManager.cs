@@ -10,35 +10,35 @@ public enum CheckWinResponse
     Draw = 3
 }
 
-
 public static class StateManager
 {
-    public static int[] GiveResetState()=>
-    // public static SquareOptions[] GiveResetState()=>
+    public static int[] GiveResetState() =>
+        // public static SquareOptions[] GiveResetState()=>
         [
-            1, 2, 0,
-            1, 2, 0,
+            0, 0, 0,
+            0, 0, 0,
             0, 0, 0
         ];
     // [
-    //         0, 0, 0,
-    //         0, 0, 0,
-    //         0, 0, 0
-    //     ];
+    //     1, 2, 0,
+    //     1, 2, 0,
+    //     0, 0, 0
+    // ];
+
 
     public static CheckWinResponse CheckForWinner()
     {
         return CheckWinResponse.NoWinner;
     }
-    
-    
-    public static int[] ChangeOnePosition (int choosePosition, int playerIndex, int[] currentState)
+
+
+    public static int[] ChangeOnePosition(int choosePosition, int playerIndex, int[] currentState)
     {
-        if(currentState[choosePosition] != 0)
+        if (currentState[choosePosition] != 0)
             throw new GenericApiError("Position already taken");
-        
+
         currentState[choosePosition] = playerIndex;
-        
+
         return currentState;
     }
 
@@ -82,21 +82,21 @@ public static class StateManager
         int filledCount = 0;
 
         foreach (int square in state)
-            if(square != 0)
+            if (square != 0)
                 filledCount++;
-        
-        if(filledCount < 9)
+
+        if (filledCount < 9)
             return false;
-        
-        
+
+
         var isPlayer1Wins = CheckWinForPlayer(1, state);
         if (isPlayer1Wins)
             return false;
-        
+
         var isPlayer2Wins = CheckWinForPlayer(2, state);
-        if(isPlayer2Wins)
+        if (isPlayer2Wins)
             return false;
-        
+
         return true;
     }
 }

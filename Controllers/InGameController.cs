@@ -34,9 +34,10 @@ public class InGameController: ControllerBase
     public IActionResult DeleteOnDesconnection(int playerIndex, string roomId)
     {
         var roomInfo = RoomStateManager.GetRoomStateById(roomId);
-        var inGameInfo = InGameManager.GetInGameStateById(roomId);
+        // var inGameInfo = InGameManager.GetInGameStateById(roomId);
         
-        if(inGameInfo == null || roomInfo == null)
+        // if(inGameInfo == null || roomInfo == null)
+        if(roomInfo == null)
             throw new GenericApiError("Room doesn't exists");
 
 
@@ -55,7 +56,10 @@ public class InGameController: ControllerBase
             InGameManager.DeleteInGameState(roomId);
             RoomStateManager.DeleteRoom(roomId);
         }
+        else 
+            RoomStateManager.UpdateRoom(roomInfo);
         
+        var finalRoomState = RoomStateManager.GetRoomStateById(roomId);
         
         return Ok(true);
     }
