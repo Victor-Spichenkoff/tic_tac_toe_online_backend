@@ -58,7 +58,9 @@ public class SocketService
         // em caso de erro,
         if (RoomManager.rooms[roomId].Count == 0)
         {
-            RoomManager.rooms.TryRemove(roomId, out _);
+            // possível erro ao desconectar aqui
+            _ = GeneralHelper.RemoveConnectionAfter(1000*30, roomId);
+            // RoomManager.rooms.TryRemove(roomId, out _);
         }
     }
 

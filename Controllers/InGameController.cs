@@ -52,12 +52,14 @@ public class InGameController: ControllerBase
         
         if (!roomInfo.isPLayer1Connected && !roomInfo.isPLayer2Connected)
         {//apagar totalmente
-            Console.WriteLine("Apagando permanentemente sala");
-            InGameManager.DeleteInGameState(roomId);
-            RoomStateManager.DeleteRoom(roomId);
+            Console.WriteLine("Apagando permanentemente sala em 2 minutos");
+            // InGameManager.DeleteInGameState(roomId);
+            // RoomStateManager.DeleteRoom(roomId);
+            // _ -> descartável, só para sinalizar que não ligo para o retorno
+            _ = GeneralHelper.RemoveConnectionAfter(1000*30, roomId);
+            // GeneralHelper.RemoveConnectionAfter(1000*60*2, roomId);
         }
-        else 
-            RoomStateManager.UpdateRoom(roomInfo);
+        else RoomStateManager.UpdateRoom(roomInfo);
         
         var finalRoomState = RoomStateManager.GetRoomStateById(roomId);
         

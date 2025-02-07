@@ -96,13 +96,16 @@ public class ChatController : ControllerBase
         if (!RoomManager.RoomExists(roomId))
             throw new GenericApiError("Room doesn't exists");
 
-        if (RoomManager.RoomFull(roomId))
-            throw new GenericApiError("Room Full");
+        // decomentar em caso de erro aqui
+        // if (RoomManager.RoomFull(roomId))
+        //     throw new GenericApiError("Room Full");
+
 
         var newRoomInfos = RoomStateManager.GetRoomStateById(roomId);
 
         if (newRoomInfos == null)
             throw new GenericApiError("Room doesn't exists");
+
 
         var playerIndex = 2;
 
