@@ -17,7 +17,7 @@ public static class CorsService
 
             options.AddPolicy("ProductionCorsPolicy", builder =>
             {
-                string[] allowedOrigins = ["https://tic-tac-toe-online-six.vercel.app"];
+                string[] allowedOrigins = ["https://tic-tac-toe-online-six.vercel.app", "https://server-maintenance-page.vercel.app"];
                 builder.WithOrigins(allowedOrigins) // Adiciona os sites de produção
                     .AllowAnyHeader()
                     .AllowAnyMethod();

@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddSingleton<SocketService>();//sockets como service
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlite("Data Source=Data/dev.db"));
