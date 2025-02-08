@@ -115,14 +115,14 @@ public class InGameManager
         {
             if (isPLayer1Victory)
             {
-                semiFinalInGameState.isPLayer1Turn = true;
+                semiFinalInGameState.player1Wins = true;
                 RoomStateManager.AddWinToPlayer(roomId, 1);
             }
 
             if (isPLayer2Victory)
             {
                 RoomStateManager.AddWinToPlayer(roomId, 2);
-                semiFinalInGameState.isPlayer2Turn = true;
+                semiFinalInGameState.player2Wins = true;
             }
         }
 
